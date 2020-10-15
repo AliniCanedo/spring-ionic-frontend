@@ -22,6 +22,15 @@ export class AuthService {
                 responseType: 'text'
             });
     }
+    refreshToken() {
+        return this.http.post(
+            `${API_CONFIG.baseUrl}/auth/refresh_token`,
+            {},
+            {
+                observe: 'response',
+                responseType: 'text'
+            });
+    }
     successfulLogin(authorizationValue: string) {
         // substring cortando a string a partir do 7
         let tok = authorizationValue.substring(7);
