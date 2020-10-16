@@ -32,12 +32,12 @@ export class HomePage {
   }
   ionViewDidEnter() {
     this.authService.refreshToken()
-    .subscribe(response => {
-      this.authService.successfulLogin(response.headers.get('Authorization'));
-      this.navCtrl.setRoot('CategoriasPage');
-    },
-      erro => { }
-    );
+      .subscribe(response => {
+        this.authService.successfulLogin(response.headers.get('Authorization'));
+        this.navCtrl.setRoot('CategoriasPage');
+      },
+        erro => { }
+      );
   }
 
   login() {
@@ -48,6 +48,9 @@ export class HomePage {
       },
         erro => { }
       );
+  }
+  signup() {
+    this.navCtrl.push('SignupPage');
   }
 
 }
