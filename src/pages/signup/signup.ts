@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { CidadeService } from '../../app/services/domain/cidade.service';
+import { ClienteService } from '../../app/services/domain/cliente.service';
+import { EstadoService } from '../../app/services/domain/estado.service';
+import { CidadeDTO } from '../../models/cidade.dto';
+import { EstadoDTO } from '../../models/estado.dto';
 
 @IonicPage()
 @Component({
@@ -9,9 +14,18 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class SignupPage {
   formGroup: FormGroup;
-  constructor(public navCtrl: NavController,
+  estados: EstadoDTO[];
+  cidades: CidadeDTO[];
+
+  constructor(
+    public navCtrl: NavController,
     public navParams: NavParams,
-    public formBuilder: FormBuilder) {
+    public formBuilder: FormBuilder,
+    public cidadeService: CidadeService,
+    public estadoService: EstadoService,
+    public clienteService: ClienteService,
+  ) {
+
     this.formGroup = this.formBuilder.group({
       nome: ['Joaquim', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
       email: ['joaquim@gmail.com', [Validators.required, Validators.email]],
@@ -28,11 +42,24 @@ export class SignupPage {
       telefone3: ['', []],
       estadoId: [null, [Validators.required]],
       cidadeId: [null, [Validators.required]]
-    })
+    });
   }
-
-/*   ionViewDidLoad() {
-    console.log('ionViewDidLoad SignupPage');
+  ionViewDidLoad() {
+    this.estadoService.findAll()
+      .subscribe(response => {
+        this.estados = response;
+        this.formGroup.controls.estadoId.setValue(this.estados[0].id);
+        this.updateCidades();
+      },
+        error => { });
   }
- */
+  updateCidades() {
+    let estado_id = this.formGroup.value.estadoId;
+    this.cidadeService.findAll(estado_id)
+      .subscribe(response => {
+        this.cidades = response;
+        this.formGroup.controls.cidadeId.setValue(null);
+      },
+        error => { });
+  }
 }
