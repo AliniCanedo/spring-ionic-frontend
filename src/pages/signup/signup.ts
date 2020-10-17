@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AlertController, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { CidadeService } from '../../app/services/domain/cidade.service';
 import { ClienteService } from '../../app/services/domain/cliente.service';
 import { EstadoService } from '../../app/services/domain/estado.service';
@@ -24,13 +24,13 @@ export class SignupPage {
     public cidadeService: CidadeService,
     public estadoService: EstadoService,
     public clienteService: ClienteService,
-  ) {
+    public alertCtrl: AlertController) {
 
     this.formGroup = this.formBuilder.group({
       nome: ['Joaquim', [Validators.required, Validators.minLength(5), Validators.maxLength(120)]],
       email: ['joaquim@gmail.com', [Validators.required, Validators.email]],
       tipo: ['1', [Validators.required]],
-      cpfOuCnpj: ['06134596280', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
+      cpfOuCnpj: ['54193147460', [Validators.required, Validators.minLength(11), Validators.maxLength(14)]],
       senha: ['123', [Validators.required]],
       logradouro: ['Rua Via', [Validators.required]],
       numero: ['25', [Validators.required]],
@@ -44,6 +44,7 @@ export class SignupPage {
       cidadeId: [null, [Validators.required]]
     });
   }
+
   ionViewDidLoad() {
     this.estadoService.findAll()
       .subscribe(response => {
@@ -53,6 +54,7 @@ export class SignupPage {
       },
         error => { });
   }
+
   updateCidades() {
     let estado_id = this.formGroup.value.estadoId;
     this.cidadeService.findAll(estado_id)
@@ -61,5 +63,30 @@ export class SignupPage {
         this.formGroup.controls.cidadeId.setValue(null);
       },
         error => { });
+  }
+
+  signupUser() {
+    this.clienteService.insert(this.formGroup.value)
+      .subscribe(response => {
+        this.showInsertOk();
+      },
+        error => { });
+  }
+
+  showInsertOk() {
+    let alert = this.alertCtrl.create({
+      title: 'Sucesso!',
+      message: 'Cadastro efetuado com sucesso',
+      enableBackdropDismiss: false,
+      buttons: [
+        {
+          text: 'Ok',
+          handler: () => {
+            this.navCtrl.pop();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 }

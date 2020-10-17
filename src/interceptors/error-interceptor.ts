@@ -9,6 +9,7 @@ import { FieldMessage } from '../models/fieldmessage';
 export class ErrorInterceptor implements HttpInterceptor {
     constructor(public storage: StorageService, public alertCtrl: AlertController) {
     }
+
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req)
         .catch((error, caught) => {
